@@ -1,17 +1,14 @@
 package com.capstone.pick.service;
 
-import com.capstone.pick.domain.Hashtag;
-import com.capstone.pick.domain.User;
-import com.capstone.pick.domain.Vote;
-import com.capstone.pick.domain.VoteHashtag;
-import com.capstone.pick.dto.HashtagDto;
-import com.capstone.pick.dto.VoteDto;
-import com.capstone.pick.dto.VoteOptionDto;
+import com.capstone.pick.domain.*;
+import com.capstone.pick.domain.constant.Category;
+import com.capstone.pick.dto.*;
 import com.capstone.pick.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,6 +28,24 @@ public class VoteService {
         return votes.stream()
                 .map(VoteDto::from)
                 .collect(Collectors.toList());
+    }
+
+    public List<PostDto> findAllVotesByCategory(Category category) {
+        List<Vote> votes = voteRepository.findAll();
+        List<PostDto> postList = new ArrayList<>();
+
+        for(Vote vote : votes) {
+            List<VoteHashtag> hashtags = voteHashtagRepository.findAllByVoteId(vote.getId());
+            postList.add(
+                    PostDto.builder()
+                            .VoteDto(VoteDto.from(vote))
+                            .voteHashtagDto(hashtags.stream()
+                                    .map(VoteHashtagDto::from)
+                                    .collect(Collectors.toList()))
+                            .build()
+            );
+        }
+        return postList;
     }
 
     public void saveVote(VoteDto dto, List<VoteOptionDto> voteOptionDtos, List<HashtagDto> hashtagDtos) {

@@ -1,11 +1,11 @@
 package com.capstone.pick.domain.constant;
 
-public enum Category {
-    ALL("전체"), FREE("자유"), WORRY("고민"), SURVEY("설문"), ENTERPRISE("기업");
+public enum OrderCriteria {
+    LATEST("최신순"), POPULAR("인기순"), RELEVANCE("관련도순");
 
     private final String displayValue;
 
-    Category(String displayValue) {
+    OrderCriteria(String displayValue) {
         this.displayValue = displayValue;
     }
 

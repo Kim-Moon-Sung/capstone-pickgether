@@ -2,10 +2,10 @@ package com.capstone.pick.controller;
 
 import com.capstone.pick.controller.form.VoteForm;
 import com.capstone.pick.controller.form.VoteOptionFormListDto;
-import com.capstone.pick.dto.HashtagDto;
-import com.capstone.pick.dto.VoteDto;
-import com.capstone.pick.dto.VoteOptionDto;
+import com.capstone.pick.domain.constant.Category;
+import com.capstone.pick.dto.*;
 import com.capstone.pick.security.VotePrincipal;
+import com.capstone.pick.service.VoteCommentService;
 import com.capstone.pick.service.VoteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class VoteController {
 
     private final VoteService voteService;
-
+    private final VoteCommentService voteCommentService;
     @GetMapping("/")
     public String home() {
         return "redirect:/timeline";
@@ -29,8 +29,9 @@ public class VoteController {
 
     @GetMapping("/timeline")
     public String timeLine(Model model) {
-        List<VoteDto> votes = voteService.findAllVotes();
-        model.addAttribute("votes", votes);
+        List<PostDto> posts = voteService.findAllVotesByCategory(Category.ALL);
+        //List<VoteDto> votes = voteService.findAllVotes();
+        model.addAttribute("posts", posts);
         return "/page/timeLine";
     }
 
@@ -90,5 +91,14 @@ public class VoteController {
         voteService.deleteVote(voteId, votePrincipal.getUsername());
 
         return "redirect:/timeline";
+    }
+
+    //Todo : 카테고리별 정렬 기능 구현
+    @GetMapping("/timeline{category}")
+    public String sortVote(@PathVariable(value = "category", required = false) Category category,
+                              Model model) {
+        List<PostDto> posts = voteService.findAllVotesByCategory(category);
+        model.addAttribute("posts", posts);
+        return "/page/timeLine";
     }
 }
