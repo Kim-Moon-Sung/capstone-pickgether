@@ -31,9 +31,13 @@ public class VoteService {
     }
 
     public List<PostDto> findAllVotesByCategory(Category category) {
-        List<Vote> votes = voteRepository.findAll();
+        List<Vote> votes = new ArrayList<>();
+        if(category.equals(Category.ALL)) {
+            for (Category c : Category.values()) {
+                votes.addAll(voteRepository.findByCategory(c));
+            }
+        } else votes.addAll(voteRepository.findByCategory(category));
         List<PostDto> postList = new ArrayList<>();
-
         for(Vote vote : votes) {
             List<VoteHashtag> hashtags = voteHashtagRepository.findAllByVoteId(vote.getId());
             postList.add(
