@@ -1,7 +1,6 @@
 package com.capstone.pick.controller;
 
 import com.capstone.pick.controller.form.VoteForm;
-import com.capstone.pick.controller.form.VoteOptionFormListDto;
 import com.capstone.pick.domain.constant.Category;
 import com.capstone.pick.domain.constant.OrderCriteria;
 import com.capstone.pick.dto.*;
@@ -50,8 +49,7 @@ public class VoteController {
 
     @PostMapping("/form")
     public String saveVote(@AuthenticationPrincipal VotePrincipal votePrincipal,
-                           @ModelAttribute VoteForm voteForm,
-                           @ModelAttribute(value = "VoteOptionFormListDto") VoteOptionFormListDto voteOptions) {
+                           @ModelAttribute VoteForm voteForm) {
         VoteDto voteDto = voteForm.toDto(votePrincipal.toDto());
         List<HashtagDto> hashtagDtos = voteForm.getHashtagDtos();
         List<VoteOptionDto> voteOptionDtos = voteForm.getVoteOptions()
