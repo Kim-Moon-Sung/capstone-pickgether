@@ -63,16 +63,21 @@ public class VoteForm {
     public List<HashtagDto> getHashtagDtos() {
         Pattern pattern = Pattern.compile("#(.*?)\\s");
         Matcher matcher = pattern.matcher(content + " ");
+
         List<HashtagDto> hashtagDtos = new ArrayList<>();
         while (matcher.find()) {
             if (matcher.group(0).equals("# ")) {
                 continue;
             }
 
-            hashtagDtos.add(HashtagDto.builder()
-                    .content(matcher.group(1))
-                    .build());
+            String[] split = matcher.group(1).split("#");
+            for (String s : split) {
+                hashtagDtos.add(HashtagDto.builder()
+                        .content(s)
+                        .build());
+            }
         }
+
         return hashtagDtos;
     }
 }
